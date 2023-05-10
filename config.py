@@ -37,16 +37,18 @@ terminal = guess_terminal()
 
 powerline = {
     "decorations": [
-        PowerLineDecoration(path='arrow_right')
+        PowerLineDecoration(path='rounded_left')
     ]
 }
 
-theme_color = "#005a5a"
+theme_colors = ["#005a5a",
+				"#ffffff",
+				"#272727"]
 
 layout_theme = {"border_width": 2,
                 "margin": 8,
                 "border_focus": "e1acff",
-                "border_normal": theme_color
+                "border_normal": theme_colors[0]
                 }
 
 
@@ -153,10 +155,15 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.CurrentLayout(background=theme_color),
-                widget.GroupBox(highlight_method='block', inactive='#000000', background=theme_color, **powerline),
+                widget.Image(background=theme_colors[0],
+					filename='/home/tim/Pictures/Icons/161-1613315_transparent-hinduism-symbol-png-golden-om-png-png.png',
+					mouse_callbacks={
+						'Button1': lazy.spawn('rofi -show drun'),
+						'Button3': lazy.spawn('systemctl suspend')}),
+                widget.GroupBox(highlight_method='block', inactive='#000000', background=theme_colors[0], **powerline),
+                widget.CurrentLayout(background=theme_colors[0], **powerline),
                 widget.Prompt(),
-                widget.WindowName(),
+                widget.WindowName(background=theme_colors[2]),
                 widget.Chord(
                     chords_colors={
                         "launch": ("#ff0000", "#ffffff"),
@@ -164,31 +171,38 @@ screens = [
                     name_transform=lambda name: name.upper(),
                 ),
                 # widget.ALSAWidget(),
-				widget.Sep(background=theme_color, foreground='#ffffff', **powerline),
-                widget.CPU(format="CPU {load_percent}%", background=theme_color),
-                widget.ThermalSensor(format="{temp:.1f}{unit}", background=theme_color),
-				widget.Sep(background=theme_color, foreground='#ffffff'),
-                widget.NvidiaSensors(background=theme_color, format='GPU {temp}°C'),
-				widget.Sep(background=theme_color, foreground='#ffffff'),
-                widget.Memory(format='RAM {MemUsed: .1f}{mm}/{MemTotal: .1f}{mm}', background=theme_color, measure_mem="G" ),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1], **powerline),
+                widget.CPU(format="CPU {load_percent}%", background=theme_colors[0]),
+                widget.ThermalSensor(format="{temp:.1f}{unit}", background=theme_colors[0]),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
+                widget.NvidiaSensors(background=theme_colors[0], format='GPU {temp}°C'),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
+                widget.Memory(format='RAM {MemUsed: .1f}{mm}/{MemTotal: .1f}{mm}', background=theme_colors[0], measure_mem="G" ),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
                 # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
                 # widget.StatusNotifier(),
-				widget.Sep(background=theme_color, foreground='#ffffff'),
-                widget.Clock(format="%H:%M - %d/%m/%Y", background=theme_color),
-				widget.Sep(background=theme_color, foreground='#ffffff'),
-				widget.Volume(background=theme_color, fmt = 'VOL: {}'),
-				widget.Sep(background=theme_color, foreground='#ffffff'),
-				widget.KeyboardLayout(background=theme_color),
-				widget.Sep(background=theme_color, foreground='#ffffff'),
-                widget.BatteryIcon(background=theme_color),
-                widget.Battery(format='{percent:2.0%}', background=theme_color),
-				widget.Sep(background=theme_color, foreground='#ffffff'),
-                widget.Systray(background=theme_color),
-				widget.Sep(background=theme_color, foreground='#ffffff'),
+				widget.Backlight(background=theme_colors[0], fmt = 'LT: {}', backlight_name='nvidia_0',
+					change_command='brightnessctl set {0}',
+					mouse_callbacks={
+								'Button1': lazy.spawn('brightnessctl set 100'),
+								'Button2': lazy.spawn('brightnessctl set 50'),
+								'Button3': lazy.spawn('brightnessctl set 75')}),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
+				widget.Volume(background=theme_colors[0], fmt = 'VOL: {}'),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
+				widget.KeyboardLayout(background=theme_colors[0], configured_keyboards=['fr', 'us']),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
+                widget.BatteryIcon(background=theme_colors[0]),
+                widget.Battery(format='{percent:2.0%}', background=theme_colors[0]),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
+                widget.Clock(format="%H:%M - %d/%m/%Y", background=theme_colors[0]),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
+                widget.Systray(background=theme_colors[0]),
+				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
             ],
             28,
             border_width=[2, 0, 2, 0],  # Draw top and bottom borders
-            border_color=[theme_color, "000000", theme_color, "000000"]  # Borders are magenta
+            border_color=[theme_colors[0], "000000", theme_colors[0], "000000"]  # Borders are magenta
         ),
     ),
 ]
@@ -230,7 +244,9 @@ def start_once():
 	commands = ["xrandr --dpi '96 x 96'",
 				"nitrogen --restore",
 				]
-	os.system("bash $HOME/.config/qtile/initiate.sh")	
+
+	for c in commands:
+		os.system(c)
 
 # When using the Wayland backend, this can be used to configure input devices.
 wl_input_rules = None
