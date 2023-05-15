@@ -35,13 +35,19 @@ from libqtile.utils import guess_terminal
 mod = "mod4"
 terminal = guess_terminal()
 
-powerline = {
+powerline_right = {
     "decorations": [
         PowerLineDecoration(path='rounded_left')
     ]
 }
 
-theme_colors = ["#005a5a",
+powerline_left = {
+    "decorations": [
+        PowerLineDecoration(path='rounded_right')
+    ]
+}
+
+theme_colors = ["#0006b1",
 				"#ffffff",
 				"#272727"]
 
@@ -160,10 +166,10 @@ screens = [
 					mouse_callbacks={
 						'Button1': lazy.spawn('rofi -show drun'),
 						'Button3': lazy.spawn('systemctl suspend')}),
-                widget.GroupBox(highlight_method='block', inactive='#000000', background=theme_colors[0], **powerline),
-                widget.CurrentLayout(background=theme_colors[0], **powerline),
+                widget.GroupBox(highlight_method='block', inactive='#000000', background=theme_colors[0]),
+                widget.CurrentLayout(background=theme_colors[0], **powerline_right),
                 widget.Prompt(),
-                widget.WindowName(background=theme_colors[2]),
+                widget.WindowName(background=theme_colors[2], **powerline_left),
                 widget.Chord(
                     chords_colors={
                         "launch": ("#ff0000", "#ffffff"),
@@ -171,7 +177,7 @@ screens = [
                     name_transform=lambda name: name.upper(),
                 ),
                 # widget.ALSAWidget(),
-				widget.Sep(background=theme_colors[0], foreground=theme_colors[1], **powerline),
+#				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
                 widget.CPU(format="CPU {load_percent}%", background=theme_colors[0]),
                 widget.ThermalSensor(format="{temp:.1f}{unit}", background=theme_colors[0]),
 				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
@@ -200,7 +206,7 @@ screens = [
                 widget.Systray(background=theme_colors[0]),
 				widget.Sep(background=theme_colors[0], foreground=theme_colors[1]),
             ],
-            28,
+            24,
             border_width=[2, 0, 2, 0],  # Draw top and bottom borders
             border_color=[theme_colors[0], "000000", theme_colors[0], "000000"]  # Borders are magenta
         ),
